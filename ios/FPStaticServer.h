@@ -1,10 +1,10 @@
 #import <React/RCTBridgeModule.h>
 
-// GCDWebServer: https://github.com/swisspol/GCDWebServer
-#import "GCDWebServer.h"
+// RNGCDWebServer: https://github.com/swisspol/RNGCDWebServer
+#import "RNGCDWebServer.h"
 
 @interface FPStaticServer : NSObject <RCTBridgeModule> {
-    GCDWebServer* _webServer;
+    RNGCDWebServer* _webServer;
 }
 
     @property(nonatomic, retain) NSString *localPath;

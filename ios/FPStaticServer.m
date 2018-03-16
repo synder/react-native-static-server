@@ -9,8 +9,8 @@ RCT_EXPORT_MODULE();
 - (instancetype)init {
     if((self = [super init])) {
         
-        [GCDWebServer self];
-        _webServer = [[GCDWebServer alloc] init];
+        [RNGCDWebServer self];
+        _webServer = [[RNGCDWebServer alloc] init];
     }
     return self;
 }
@@ -82,17 +82,17 @@ RCT_EXPORT_METHOD(start: (NSString *)port
     NSLog(@"Started StaticServer on port %@", self.port);
     
     if (![self.port isEqualToNumber:[NSNumber numberWithInt:-1]]) {
-        [options setObject:self.port forKey:GCDWebServerOption_Port];
+        [options setObject:self.port forKey:RNGCDWebServerOption_Port];
     } else {
-        [options setObject:[NSNumber numberWithInteger:8080] forKey:GCDWebServerOption_Port];
+        [options setObject:[NSNumber numberWithInteger:8080] forKey:RNGCDWebServerOption_Port];
     }
 
     if (self.localhost_only == YES) {
-        [options setObject:@(YES) forKey:GCDWebServerOption_BindToLocalhost];
+        [options setObject:@(YES) forKey:RNGCDWebServerOption_BindToLocalhost];
     }
     
     if (self.keep_alive == YES) {
-        [options setObject:@(NO) forKey:GCDWebServerOption_AutomaticallySuspendInBackground];
+        [options setObject:@(NO) forKey:RNGCDWebServerOption_AutomaticallySuspendInBackground];
     }
     
 

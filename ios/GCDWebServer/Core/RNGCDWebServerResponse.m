@@ -26,28 +26,28 @@
  */
 
 #if !__has_feature(objc_arc)
-#error GCDWebServer requires ARC
+#error RNGCDWebServer requires ARC
 #endif
 
 #import <zlib.h>
 
-#import "GCDWebServerPrivate.h"
+#import "RNGCDWebServerPrivate.h"
 
 #define kZlibErrorDomain @"ZlibErrorDomain"
 #define kGZipInitialBufferSize (256 * 1024)
 
-@interface GCDWebServerBodyEncoder : NSObject <GCDWebServerBodyReader>
+@interface RNGCDWebServerBodyEncoder : NSObject <RNGCDWebServerBodyReader>
 @end
 
-@interface GCDWebServerGZipEncoder : GCDWebServerBodyEncoder
+@interface RNGCDWebServerGZipEncoder : RNGCDWebServerBodyEncoder
 @end
 
-@implementation GCDWebServerBodyEncoder {
-  GCDWebServerResponse* __unsafe_unretained _response;
-  id<GCDWebServerBodyReader> __unsafe_unretained _reader;
+@implementation RNGCDWebServerBodyEncoder {
+  RNGCDWebServerResponse* __unsafe_unretained _response;
+  id<RNGCDWebServerBodyReader> __unsafe_unretained _reader;
 }
 
-- (instancetype)initWithResponse:(GCDWebServerResponse* _Nonnull)response reader:(id<GCDWebServerBodyReader> _Nonnull)reader {
+- (instancetype)initWithResponse:(RNGCDWebServerResponse* _Nonnull)response reader:(id<RNGCDWebServerBodyReader> _Nonnull)reader {
   if ((self = [super init])) {
     _response = response;
     _reader = reader;
@@ -69,12 +69,12 @@
 
 @end
 
-@implementation GCDWebServerGZipEncoder {
+@implementation RNGCDWebServerGZipEncoder {
   z_stream _stream;
   BOOL _finished;
 }
 
-- (instancetype)initWithResponse:(GCDWebServerResponse* _Nonnull)response reader:(id<GCDWebServerBodyReader> _Nonnull)reader {
+- (instancetype)initWithResponse:(RNGCDWebServerResponse* _Nonnull)response reader:(id<RNGCDWebServerBodyReader> _Nonnull)reader {
   if ((self = [super initWithResponse:response reader:reader])) {
     response.contentLength = NSUIntegerMax;  // Make sure "Content-Length" header is not set since we don't know it
     [response setValue:@"gzip" forAdditionalHeader:@"Content-Encoding"];
@@ -148,10 +148,10 @@
 
 @end
 
-@implementation GCDWebServerResponse {
+@implementation RNGCDWebServerResponse {
   BOOL _opened;
   NSMutableArray* _encoders;
-  id<GCDWebServerBodyReader> __unsafe_unretained _reader;
+  id<RNGCDWebServerBodyReader> __unsafe_unretained _reader;
 }
 
 + (instancetype)response {
@@ -162,7 +162,7 @@
   if ((self = [super init])) {
     _contentType = nil;
     _contentLength = NSUIntegerMax;
-    _statusCode = kGCDWebServerHTTPStatusCode_OK;
+    _statusCode = kRNGCDWebServerHTTPStatusCode_OK;
     _cacheControlMaxAge = 0;
     _additionalHeaders = [[NSMutableDictionary alloc] init];
     _encoders = [[NSMutableArray alloc] init];
@@ -197,7 +197,7 @@
 - (void)prepareForReading {
   _reader = self;
   if (_gzipContentEncodingEnabled) {
-    GCDWebServerGZipEncoder* encoder = [[GCDWebServerGZipEncoder alloc] initWithResponse:self reader:_reader];
+    RNGCDWebServerGZipEncoder* encoder = [[RNGCDWebServerGZipEncoder alloc] initWithResponse:self reader:_reader];
     [_encoders addObject:encoder];
     _reader = encoder;
   }
@@ -214,7 +214,7 @@
   return [_reader open:error];
 }
 
-- (void)performReadDataWithCompletion:(GCDWebServerBodyReaderCompletionBlock)block {
+- (void)performReadDataWithCompletion:(RNGCDWebServerBodyReaderCompletionBlock)block {
   GWS_DCHECK(_opened);
   if ([_reader respondsToSelector:@selector(asyncReadDataWithCompletion:)]) {
     [_reader asyncReadDataWithCompletion:[block copy]];
@@ -256,7 +256,7 @@
 
 @end
 
-@implementation GCDWebServerResponse (Extensions)
+@implementation RNGCDWebServerResponse (Extensions)
 
 + (instancetype)responseWithStatusCode:(NSInteger)statusCode {
   return [[self alloc] initWithStatusCode:statusCode];
@@ -275,7 +275,7 @@
 
 - (instancetype)initWithRedirect:(NSURL*)location permanent:(BOOL)permanent {
   if ((self = [self init])) {
-    self.statusCode = permanent ? kGCDWebServerHTTPStatusCode_MovedPermanently : kGCDWebServerHTTPStatusCode_TemporaryRedirect;
+    self.statusCode = permanent ? kRNGCDWebServerHTTPStatusCode_MovedPermanently : kRNGCDWebServerHTTPStatusCode_TemporaryRedirect;
     [self setValue:[location absoluteString] forAdditionalHeader:@"Location"];
   }
   return self;

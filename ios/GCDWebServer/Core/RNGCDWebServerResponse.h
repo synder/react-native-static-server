@@ -30,22 +30,22 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- *  The GCDWebServerBodyReaderCompletionBlock is passed by GCDWebServer to the
- *  GCDWebServerBodyReader object when reading data from it asynchronously.
+ *  The RNGCDWebServerBodyReaderCompletionBlock is passed by RNGCDWebServer to the
+ *  RNGCDWebServerBodyReader object when reading data from it asynchronously.
  */
-typedef void (^GCDWebServerBodyReaderCompletionBlock)(NSData* data, NSError* _Nullable error);
+typedef void (^RNGCDWebServerBodyReaderCompletionBlock)(NSData* data, NSError* _Nullable error);
 
 /**
- *  This protocol is used by the GCDWebServerConnection to communicate with
- *  the GCDWebServerResponse and read the HTTP body data to send.
+ *  This protocol is used by the RNGCDWebServerConnection to communicate with
+ *  the RNGCDWebServerResponse and read the HTTP body data to send.
  *
- *  Note that multiple GCDWebServerBodyReader objects can be chained together
+ *  Note that multiple RNGCDWebServerBodyReader objects can be chained together
  *  internally e.g. to automatically apply gzip encoding to the content before
- *  passing it on to the GCDWebServerResponse.
+ *  passing it on to the RNGCDWebServerResponse.
  *
  *  @warning These methods can be called on any GCD thread.
  */
-@protocol GCDWebServerBodyReader <NSObject>
+@protocol RNGCDWebServerBodyReader <NSObject>
 
 @required
 
@@ -80,22 +80,22 @@ typedef void (^GCDWebServerBodyReaderCompletionBlock)(NSData* data, NSError* _Nu
  *  NSData if there is body data available, or an empty NSData there is no more
  *  body data, or nil on error and pass an NSError along.
  */
-- (void)asyncReadDataWithCompletion:(GCDWebServerBodyReaderCompletionBlock)block;
+- (void)asyncReadDataWithCompletion:(RNGCDWebServerBodyReaderCompletionBlock)block;
 
 @end
 
 /**
- *  The GCDWebServerResponse class is used to wrap a single HTTP response.
- *  It is instantiated by the handler of the GCDWebServer that handled the request.
- *  If a body is present, the methods from the GCDWebServerBodyReader protocol
- *  will be called by the GCDWebServerConnection to send it.
+ *  The RNGCDWebServerResponse class is used to wrap a single HTTP response.
+ *  It is instantiated by the handler of the RNGCDWebServer that handled the request.
+ *  If a body is present, the methods from the RNGCDWebServerBodyReader protocol
+ *  will be called by the RNGCDWebServerConnection to send it.
  *
- *  The default implementation of the GCDWebServerBodyReader protocol
+ *  The default implementation of the RNGCDWebServerBodyReader protocol
  *  on the class simply returns an empty body.
  *
- *  @warning GCDWebServerResponse instances can be created and used on any GCD thread.
+ *  @warning RNGCDWebServerResponse instances can be created and used on any GCD thread.
  */
-@interface GCDWebServerResponse : NSObject <GCDWebServerBodyReader>
+@interface RNGCDWebServerResponse : NSObject <RNGCDWebServerBodyReader>
 
 /**
  *  Sets the content type for the body of the response.
@@ -110,7 +110,7 @@ typedef void (^GCDWebServerBodyReaderCompletionBlock)(NSData* data, NSError* _Nu
  *  Sets the content length for the body of the response. If a body is present
  *  but this property is set to "NSUIntegerMax", this means the length of the body
  *  cannot be known ahead of time. Chunked transfer encoding will be
- *  automatically enabled by the GCDWebServerConnection to comply with HTTP/1.1
+ *  automatically enabled by the RNGCDWebServerConnection to comply with HTTP/1.1
  *  specifications.
  *
  *  The default value is "NSUIntegerMax" i.e. the response has no body or its length
@@ -174,7 +174,7 @@ typedef void (^GCDWebServerBodyReaderCompletionBlock)(NSData* data, NSError* _Nu
  *  Pass a nil value to remove an additional header.
  *
  *  @warning Do not attempt to override the primary headers used
- *  by GCDWebServerResponse like "Content-Type", "ETag", etc...
+ *  by RNGCDWebServerResponse like "Content-Type", "ETag", etc...
  */
 - (void)setValue:(nullable NSString*)value forAdditionalHeader:(NSString*)header;
 
@@ -185,7 +185,7 @@ typedef void (^GCDWebServerBodyReaderCompletionBlock)(NSData* data, NSError* _Nu
 
 @end
 
-@interface GCDWebServerResponse (Extensions)
+@interface RNGCDWebServerResponse (Extensions)
 
 /**
  *  Creates a empty response with a specific HTTP status code.
